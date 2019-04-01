@@ -28,6 +28,7 @@
 */
 
 #include "NeuralNets.h"
+#define INF 9999999
 
 
 int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
@@ -92,8 +93,18 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          You will need to complete feedforward_1layer(), and logistic() in order to
   *          be able to complete this function.
   ***********************************************************************************************************/
- 
-  return(0);   	// <---	This should return the class for this sample
+  double activations[OUTPUTS];
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
+  double max = -INF;
+  int num = -1;
+
+  for(int i = 0; i < OUTPUTS; i++) {
+    if(activations[i] > max) {
+      max = activations[i];
+      num = i;
+    }
+  }
+  return num;   	// <---	This should return the class for this sample
 }
 
 void feedforward_1layer(double sample[785], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
@@ -120,39 +131,68 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
    * TO DO: Complete this function. You will need to implement logistic() in order for this to work
    *        with a logistic activation function.
    ******************************************************************************************************/
-  
+
+  double sum;
+  for(int ino = 0; ino < OUTPUTS; ino++) {
+    sum = 0;
+    for(int ini = 0; ini < INPUTS; ini++) {
+      sum += sample[ini] * weights_io[ini][ino];
+    }
+
+    activations[ino] = sigmoid(sum);
+  }
 }
 
 void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double (*sigmoid)(double input), int label, double weights_io[INPUTS][OUTPUTS])
 {
   /*
-   *  This function performs the core of the learning process for 1-layer networks. It takes
-   *  as input the feed-forward activation for each neuron, the expected label for this training
-   *  sample, and the weights array. Then it updates the weights in the array so as to minimize
-   *  error across neuron outputs.
-   * 
-   *  Inputs:
-   * 	sample - 	Input sample (see above for details)
-   *    activations - 	Neuron outputs as computed above
-   *    sigmoid -	Sigmoid function in use
-   *    label - 	Correct class for this sample
-   *    weights_io -	Network weights
-   * 
-   *  You have to:
-   * 		* Determine the target value for each neuron
-   * 			- This depends on the type of sigmoid being used, you should think about
-   * 			  this: What should the neuron's output be if the neuron corresponds to
-   * 			  the correct label, and what should the output be for every other neuron?
-   * 		* Compute an error value given the neuron's target
-   * 		* Compute the weight adjustment for each weight (the learning rate is in NeuralNets.h)
-   */
-  
-   /***************************************************************************************************
-    * TO DO: Implement this function to compute and apply the weight updates for all weights in
-    *        the network. You will need to find a way to figure out which sigmoid function you're
-    *        using. Then use the procedure discussed in lecture to compute weight updates.
-    * ************************************************************************************************/
-   
+  *  This function performs the core of the learning process for 1-layer networks. It takes
+  *  as input the feed-forward activation for each neuron, the expected label for this training
+  *  sample, and the weights array. Then it updates the weights in the array so as to minimize
+  *  error across neuron outputs.
+  * 
+  *  Inputs:
+  * 	sample - 	Input sample (see above for details)
+  *    activations - 	Neuron outputs as computed above
+  *    sigmoid -	Sigmoid function in use
+  *    label - 	Correct class for this sample
+  *    weights_io -	Network weights
+  * 
+  *  You have to:
+  * 		* Determine the target value for each neuron
+  * 			- This depends on the type of sigmoid being used, you should think about
+  * 			  this: What should the neuron's output be if the neuron corresponds to
+  * 			  the correct label, and what should the output be for every other neuron?
+  * 		* Compute an error value given the neuron's target
+  * 		* Compute the weight adjustment for each weight (the learning rate is in NeuralNets.h)
+  */
+
+  /***************************************************************************************************
+  * TO DO: Implement this function to compute and apply the weight updates for all weights in
+  *        the network. You will need to find a way to figure out which sigmoid function you're
+  *        using. Then use the procedure discussed in lecture to compute weight updates.
+  * ************************************************************************************************/
+  double weight, temp, err;
+  bool isLogistic = sigmoid == logistic;
+  bool sact;
+  for(int ini = 0; ini < INPUTS; ini++)
+  for(int ino = 0; ino < OUTPUTS; ino++) {
+    weight = weights_io[ini][ino];
+    sact = ino == label;
+    err = (double) sact - activations[ino];
+    if(isLogistic) {
+      // dE / dx  (tgt - out_b)
+      temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
+    } else {
+      // dE / dx  (tgt - out_b)
+      temp = 1 - tanh(err);
+    }
+
+    // out_a * alpha * above
+    temp = sample[ini] * temp * ALPHA;
+    // weight = weight + above
+    weights_io[ini][ino] = weight + temp;
+  }
 }
 
 int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -304,5 +344,9 @@ double logistic(double input)
 {
  // This function returns the value of the logistic function evaluated on input
  // TO DO: Implement this function!
- return(0);		// <--- Should return the value of the logistic function on the input 
+  double out;
+  out = 1 +exp(-1 * input);
+  out = 1 / out;
+
+ return out;		// <--- Should return the value of the logistic function on the input 
 }
