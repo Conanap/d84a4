@@ -219,10 +219,11 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     sact = label == ino;
 
     if(isLogistic) {
-      temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
+      // temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
+      temp = activations[ino] * (1 - activations[ino]);
       lb = 0;
     } else {
-      temp = 1 - sigmoid(activations[ino]) * sigmoid(activations[ino]);
+      temp = 1 - activations[ino] * activations[ino];
       lb = -1;
     }
 
