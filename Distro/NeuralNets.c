@@ -157,7 +157,7 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
     }
 
     activations[ino] = sigmoid(sum);
-    fprintf(stderr, "\tsum %f, out %f\n", ino, sum, activations[ino]);
+    fprintf(stderr, "\tsum %f, out %f\n", sum, activations[ino]);
   }
 }
 
