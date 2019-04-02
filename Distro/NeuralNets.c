@@ -75,6 +75,7 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
       max = activations[i];
       ret = i;
     }
+    fprintf(stderr, "Act %d, %f\n", i, activations[i]);
   }
   return ret;		// <--- This should return the class for this sample
 }
@@ -188,23 +189,24 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
   double weight, temp, err;
   bool isLogistic = sigmoid == logistic;
   bool sact;
-  for(int ini = 0; ini < INPUTS; ini++)
-  for(int ino = 0; ino < OUTPUTS; ino++) {
-    weight = weights_io[ini][ino];
-    sact = ino == label;
-    err = (double) sact - activations[ino];
-    if(isLogistic) {
-      // dE / dx  (tgt - out_b)
-      temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
-    } else {
-      // dE / dx  (tgt - out_b)
-      temp = 1 - tanh(err);
-    }
+  for(int ini = 0; ini < INPUTS; ini++) {
+    for(int ino = 0; ino < OUTPUTS; ino++) {
+      weight = weights_io[ini][ino];
+      sact = ino == label;
+      err = (double) sact - activations[ino];
+      if(isLogistic) {
+        // dE / dx  (tgt - out_b)
+        temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
+      } else {
+        // dE / dx  (tgt - out_b)
+        temp = 1 - tanh(err);
+      }
 
-    // out_a * alpha * above
-    temp = sample[ini] * temp * ALPHA;
-    // weight = weight + above
-    weights_io[ini][ino] = weight + temp;
+      // out_a * alpha * above
+      temp = sample[ini] * temp * ALPHA;
+      // weight = weight + above
+      weights_io[ini][ino] = weight + temp;
+    }
   }
 }
 
