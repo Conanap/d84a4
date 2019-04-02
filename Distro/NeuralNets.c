@@ -198,6 +198,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
       weight = weights_io[ini][ino];
       sact = ino == label;
       err = (double) sact - activations[ino];
+      err = err / 10;
       if(isLogistic) {
         // dE / dx  (tgt - out_b)
         temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
