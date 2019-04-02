@@ -227,9 +227,9 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     }
 
     if(sact) {
-      err = 1 - activations[ino];
+      err = ub - activations[ino];
     } else {
-      err = -1 - activations[ino];
+      err = lb - activations[ino];
     }
 
     temp = ALPHA * temp * err;
