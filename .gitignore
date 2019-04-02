@@ -1,3 +1,10 @@
 *.json
 *.bin
 .vscode
+Distro/NeuralNets
+Distro/false_positives_0_30_0.ppm
+Distro/NeuralNets.o
+Distro/err
+Distro/false_negatives_0_30_0.ppm
+Distro/final_network_weights_0_30_0.ppm
+Distro/trained_net_weigths_0_30_0.dat
