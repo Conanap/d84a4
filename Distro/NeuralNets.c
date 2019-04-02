@@ -149,15 +149,15 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
   double sum;
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sum = 0;
-    fprintf(stderr, "act %d\n", ino);
+    // fprintf(stderr, "act %d\n", ino);
     for(int ini = 0; ini < INPUTS; ini++) {
-      fprintf(stderr, "\t\tweight: %f\n", weights_io[ini][ino]);
+      // fprintf(stderr, "\t\tweight: %f\n", weights_io[ini][ino]);
       sum += sample[ini] * weights_io[ini][ino];
 
     }
 
     activations[ino] = sigmoid(sum);
-    fprintf(stderr, "\tsum %f, out %f\n", sum, activations[ino]);
+    // fprintf(stderr, "\tsum %f, out %f\n", sum, activations[ino]);
   }
 }
 
@@ -203,7 +203,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
         temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
       } else {
         // dE / dx  (tgt - out_b)
-        temp = 1 - tanh(err);
+        temp = 1 - sigmoid(err) * sigmoid(err);
       }
 
       // out_a * alpha * above
