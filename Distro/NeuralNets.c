@@ -318,7 +318,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
    *  of updates and keep track of what you need.
    * 
    *  Inputs:
-   * 	sample - 	Input sample (see above for details)
+   * 	  sample - 	Input sample (see above for details)
    *    h_activations - Hidden-layer activations
    *    activations -   Output-layer activations
    *    sigmoid -	Sigmoid function in use
