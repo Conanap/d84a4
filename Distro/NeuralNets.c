@@ -30,6 +30,8 @@
 #include "NeuralNets.h"
 #define INF 9999999
 
+double weighted_errs[MAX_HIDDEN];
+
 
 int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
 {
@@ -375,7 +377,7 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
    **************************************************************************************************/
   double sum;
   // layer I -> H
-  for(int ino = 0; ino < MAX_HIDDEN; ino++) {
+  for(int ino = 0; ino < units; ino++) {
     sum = 0;
     for(int ini = 0; ini < INPUTS; ini++) {
       sum += sample[ini] * weights_ih[ini][ino];
@@ -383,9 +385,9 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
     h_activations[ino] = sigmoid(sum * SIGMOID_SCALE);
   }
   // layer H -> O
-  for(int ino = 0; ino < OUTPUTS; ino++) }{
+  for(int ino = 0; ino < OUTPUTS; ino++) {
     sum = 0;
-    for(int ini = 0; ini < MAX_HIDDEN; ini++) {
+    for(int ini = 0; ini < units; ini++) {
       sum += h_activations[ini] * weights_ho[ini][ino];
     }
     activations[ino] = sigmoid(sum * (SIGMOID_SCALE * (MAX_HIDDEN / units)));
@@ -428,6 +430,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
   double temp, err;
   bool isLogistic = sigmoid == logistic, sact;
   double lb, ub = 1;
+  double dem_weights[INPUTS];
 
   // hidden to out
   for(int ino = 0; ino < OUTPUTS; ino++) {
@@ -449,13 +452,22 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
 
     temp = ALPHA * temp * err;
 
-    for(int ini = 0; ini < MAX_HIDDEN; ini++) {
+    for(int ini = 0; ini < units; ini++) {
+      if(!ini)
+        weighted_errs[ini] = err;
       weights_ho[ini][ino] += h_activations[ini] * temp;
     }
   }
 
+  for(int ini = 0; ini < INPUTS; ini++) {
+    dem_weights[ini] = 0;
+    for(int ino = 0; ino < units; ino++) {
+      dem_weights[ini] += weights_ih[ini][ino] * weighted_errs[ino];
+    }
+  }
+
   // input to hidden
-  for(int ino = 0; ino < MAX_HIDDEN; ino++) {
+  for(int ino = 0; ino < units; ino++) {
     sact = label == ino; // change this condition
 
     if(isLogistic) {
@@ -472,10 +484,12 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       err = lb - h_activations[ino];
     }
 
-    temp = ALPHA * temp * err;
+    temp = ALPHA * temp;
+
+    double sum = 0;
 
     for(int ini = 0; ini < INPUTS; ini++) {
-      weights_ih[ini][ino] += sample[ini] * temp;
+      weights_ih[ini][ino] += sample[ini] * temp * dem_weights[ini];
     }
   }
 }
