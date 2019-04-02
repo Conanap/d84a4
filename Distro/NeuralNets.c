@@ -276,7 +276,22 @@ int train_2layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
   
-  return(0);		// <--- Should return the class for this sample  
+  double activations[OUTPUTS];
+  double h_activations[MAX_HIDDEN];
+  int ret = -1;
+  double max = -INF;
+
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  backprop_2layer(sample, h_activations, activations, sigmoid, label, weights_ih, weights_ho, units);
+
+  for(int i = 0; i < OUTPUTS; i++) {
+    if(activations[i] > max) {
+      max = activations[i];
+      ret = i;
+    }
+  }
+
+  return ret;		// <--- Should return the class for this sample  
 }
 
 int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double input), int units, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS])
@@ -309,8 +324,19 @@ int classify_2layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
   *          You will need to complete feedforward_2layer(), and logistic() in order to
   *          be able to complete this function.
   ***********************************************************************************************************/
+  double activations[OUTPUTS];
+  double h_activations[MAX_HIDDEN];
+  feedforward_2layer(sample, sigmoid, weights_ih, weights_ho, h_activations, activations, units);
+  double max = -INF;
+  int num = -1;
 
-  return(0);		// <--- Should return the class for this sample  
+  for(int i = 0; i < OUTPUTS; i++) {
+    if(activations[i] > max) {
+      max = activations[i];
+      num = i;
+    }
+  }
+  return num;		// <--- Should return the class for this sample  
 }
 
 
@@ -347,7 +373,23 @@ void feedforward_2layer(double sample[INPUTS], double (*sigmoid)(double input), 
    *                  the scaling factor has to be adjusted by the factor
    *                  SIGMOID_SCALE*(MAX_HIDDEN/units).
    **************************************************************************************************/
-  
+  double sum;
+  // layer I -> H
+  for(int ino = 0; ino < MAX_HIDDEN; ino++) {
+    sum = 0;
+    for(int ini = 0; ini < INPUTS; ini++) {
+      sum += sample[ini] * weights_ih[ini][ino];
+    }
+    h_activations[ino] = sigmoid(sum * SIGMOID_SCALE);
+  }
+  // layer H -> O
+  for(int ino = 0; ino < OUTPUTS; ino++) }{
+    sum = 0;
+    for(int ini = 0; ini < MAX_HIDDEN; ini++) {
+      sum += h_activations[ini] * weights_ho[ini][ino];
+    }
+    activations[ino] = sigmoid(sum * (SIGMOID_SCALE * (MAX_HIDDEN / units)));
+  }
 }
 
 void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], double activations[OUTPUTS], double (*sigmoid)(double input), int label, double weights_ih[INPUTS][MAX_HIDDEN], double weights_ho[MAX_HIDDEN][OUTPUTS], int units)
@@ -383,7 +425,59 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
-   
+  double temp, err;
+  bool isLogistic = sigmoid == logistic, sact;
+  double lb, ub = 1;
+
+  // hidden to out
+  for(int ino = 0; ino < OUTPUTS; ino++) {
+    sact = label == ino;
+    
+    if(isLogistic) {
+      temp = activations[ino] * (1 - activations[ino]);
+      lb = 0;
+    } else {
+      temp = 1 - activations[ino] * activations[ino];
+      lb = -1;
+    }
+
+    if(sact) {
+      err = ub - activations[ino];
+    } else {
+      err = lb - activations[ino];
+    }
+
+    temp = ALPHA * temp * err;
+
+    for(int ini = 0; ini < MAX_HIDDEN; ini++) {
+      weights_ho[ini][ino] += h_activations[ini] * temp;
+    }
+  }
+
+  // input to hidden
+  for(int ino = 0; ino < MAX_HIDDEN; ino++) {
+    sact = label == ino; // change this condition
+
+    if(isLogistic) {
+      temp = h_activations[ino] * (1 - h_activations[ino]);
+      lb = 0;
+    } else {
+      temp = 1 - h_activations[ino] * h_activations[ino];
+      lb = -1;
+    }
+
+    if(sact) {
+      err = ub - h_activations[ino];
+    } else {
+      err = lb - h_activations[ino];
+    }
+
+    temp = ALPHA * temp * err;
+
+    for(int ini = 0; ini < INPUTS; ini++) {
+      weights_ih[ini][ino] += sample[ini] * temp;
+    }
+  }
 }
 
 double logistic(double input)
