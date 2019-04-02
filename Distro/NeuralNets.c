@@ -152,7 +152,7 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
     // fprintf(stderr, "act %d\n", ino);
     for(int ini = 0; ini < INPUTS; ini++) {
       // fprintf(stderr, "\t\tweight: %f\n", weights_io[ini][ino]);
-      sum += sample[ini] * weights_io[ini][ino];
+      sum += sample[ini] * SIGMOID_SCALE * weights_io[ini][ino];
 
     }
 
@@ -198,7 +198,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
       weight = weights_io[ini][ino];
       sact = ino == label;
       err = (double) sact - activations[ino];
-      err = err / 10;
+      err = err;
       if(isLogistic) {
         // dE / dx  (tgt - out_b)
         temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
