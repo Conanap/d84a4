@@ -63,7 +63,11 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   *          be able to complete this function.
   ***********************************************************************************************************/
 
-  return(0);		// <--- This should return the class for this sample
+  double activations[OUTPUTS];
+
+  int ret = feedforward_1layer(sample, sigmoid, weights_io, activations);
+  backprop_1layer(sample, activations, sigmoid, label, weights_io);
+  return ret;		// <--- This should return the class for this sample
 }
 
 int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
@@ -104,7 +108,7 @@ int classify_1layer(double sample[INPUTS],int label,double (*sigmoid)(double inp
       num = i;
     }
   }
-  return num;   	// <---	This should return the class for this sample
+  return num;
 }
 
 void feedforward_1layer(double sample[785], double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS], double activations[OUTPUTS])
