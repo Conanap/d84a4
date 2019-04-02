@@ -468,20 +468,10 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
 
   // input to hidden
   for(int ino = 0; ino < units; ino++) {
-    sact = label == ino; // change this condition
-
     if(isLogistic) {
       temp = h_activations[ino] * (1 - h_activations[ino]);
-      lb = 0;
     } else {
       temp = 1 - h_activations[ino] * h_activations[ino];
-      lb = -1;
-    }
-
-    if(sact) {
-      err = ub - h_activations[ino];
-    } else {
-      err = lb - h_activations[ino];
     }
 
     temp = ALPHA * temp;
