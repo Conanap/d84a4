@@ -235,7 +235,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     temp = ALPHA * temp * err;
 
     for(int ini = 0; ini < INPUTS; ini++) {
-      weights_io[ini][ino] += sample[i] * temp;
+      weights_io[ini][ino] += sample[ini] * temp;
     }
   }
 }
