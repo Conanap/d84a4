@@ -193,24 +193,45 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
   double weight, temp, err;
   bool isLogistic = sigmoid == logistic;
   bool sact;
-  for(int ini = 0; ini < INPUTS; ini++) {
-    for(int ino = 0; ino < OUTPUTS; ino++) {
-      weight = weights_io[ini][ino];
-      sact = ino == label;
-      err = (double) sact - activations[ino];
-      err = err * SIGMOID_SCALE;
-      if(isLogistic) {
-        // dE / dx  (tgt - out_b)
-        temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
-      } else {
-        // dE / dx  (tgt - out_b)
-        temp = 1 - sigmoid(err) * sigmoid(err);
-      }
+  // for(int ini = 0; ini < INPUTS; ini++) {
+  //   for(int ino = 0; ino < OUTPUTS; ino++) {
+  //     weight = weights_io[ini][ino];
+  //     sact = ino == label;
+  //     err = (double) sact - activations[ino];
+  //     err = err * SIGMOID_SCALE;
+  //     if(isLogistic) {
+  //       // dE / dx  (tgt - out_b)
+  //       temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
+  //     } else {
+  //       // dE / dx  (tgt - out_b)
+  //       temp = 1 - sigmoid(err) * sigmoid(err);
+  //     }
 
-      // out_a * alpha * above
-      temp = sample[ini] * temp * ALPHA;
-      // weight = weight + above
-      weights_io[ini][ino] = weight + temp;
+  //     // out_a * alpha * above
+  //     temp = sample[ini] * temp * ALPHA;
+  //     // weight = weight + above
+  //     weights_io[ini][ino] = weight + temp;
+  //   }
+  // }
+
+  for(int ino = 0; ino < OUTPUTS; ino++) {
+    sact = label == ino;
+    if(sact) {
+      err = 1 - activations[ino];
+    } else {
+      err = -1 - activations[ino];
+    }
+
+    if(isLogistic) {
+      temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
+    } else {
+      temp = 1 - sigmoid(activations[ino]) * sigmoid(activations[ino]);
+    }
+
+    temp = ALPHA * temp * err;
+
+    for(int ini = 0; ini < INPUTS; ini++) {
+      weights_io[ini][ino] += sample[i] * temp;
     }
   }
 }
