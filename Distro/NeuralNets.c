@@ -75,7 +75,7 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
       max = activations[i];
       ret = i;
     }
-    fprintf(stderr, "Act %d, %f\n", i, activations[i]);
+    // fprintf(stderr, "Act %d, %f\n", i, activations[i]);
   }
   return ret;		// <--- This should return the class for this sample
 }
@@ -154,6 +154,7 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
     }
 
     activations[ino] = sigmoid(sum);
+    fprintf("act %d, sum %f, out %f\n", ino, sum, activations[ino]);
   }
 }
 
