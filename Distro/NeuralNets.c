@@ -149,12 +149,15 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
   double sum;
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sum = 0;
+    fprintf(stderr, "act %d\n", ino);
     for(int ini = 0; ini < INPUTS; ini++) {
+      fprintf(stderr, "\t\tweight: %f\n", weights_io[ini][ino]);
       sum += sample[ini] * weights_io[ini][ino];
+
     }
 
     activations[ino] = sigmoid(sum);
-    fprintf(stderr, "act %d, sum %f, out %f\n", ino, sum, activations[ino]);
+    fprintf(stderr, "\tsum %f, out %f\n", ino, sum, activations[ino]);
   }
 }
 
