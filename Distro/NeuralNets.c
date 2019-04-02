@@ -193,6 +193,7 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
   double weight, temp, err;
   bool isLogistic = sigmoid == logistic;
   bool sact;
+  double lb, ub = 1;
   // for(int ini = 0; ini < INPUTS; ini++) {
   //   for(int ino = 0; ino < OUTPUTS; ino++) {
   //     weight = weights_io[ini][ino];
@@ -216,16 +217,19 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
 
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sact = label == ino;
+
+    if(isLogistic) {
+      temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
+      lb = 0;
+    } else {
+      temp = 1 - sigmoid(activations[ino]) * sigmoid(activations[ino]);
+      lb = -1;
+    }
+
     if(sact) {
       err = 1 - activations[ino];
     } else {
       err = -1 - activations[ino];
-    }
-
-    if(isLogistic) {
-      temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
-    } else {
-      temp = 1 - sigmoid(activations[ino]) * sigmoid(activations[ino]);
     }
 
     temp = ALPHA * temp * err;
