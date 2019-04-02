@@ -64,9 +64,18 @@ int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double in
   ***********************************************************************************************************/
 
   double activations[OUTPUTS];
+  int ret = -1;
+  double max = -INF;
 
-  int ret = feedforward_1layer(sample, sigmoid, weights_io, activations);
+  feedforward_1layer(sample, sigmoid, weights_io, activations);
   backprop_1layer(sample, activations, sigmoid, label, weights_io);
+
+  for(int i = 0; i < OUTPUTS; i++) {
+    if(activations[i] > max) {
+      max = activations[i];
+      ret = i;
+    }
+  }
   return ret;		// <--- This should return the class for this sample
 }
 
