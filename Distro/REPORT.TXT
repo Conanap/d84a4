@@ -235,10 +235,14 @@ but explain carefully when needed.
 
 		- Describe what the input is in terms of a vector of
 		  values
+        Inputs potential results of next step for mouse, i.e. what would happen to it after it takes a step left/right/up/down next turn (assuming legitimate move).
 		- Describe what the output layer looks like (how many
 		  neurons and what they encode)
+        4 neurons, outcome of corresponding step in terms of overall game winrate
 		- Describe the error function
+        expected result from move (i.e. eat cheese, win) vs actual result of move
 		- How many layers should you use?
+        2
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
