@@ -30,7 +30,9 @@
 #include "NeuralNets.h"
 #define INF 9999999
 
-double weighted_errs[MAX_HIDDEN];
+double errs[OUTPUTS];
+double dx[OUTPUTS];
+double old_weights[MAX_HIDDEN][INPUTS];
 
 
 int train_1layer_net(double sample[INPUTS],int label,double (*sigmoid)(double input), double weights_io[INPUTS][OUTPUTS])
@@ -151,15 +153,12 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
   double sum;
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sum = 0;
-    // fprintf(stderr, "act %d\n", ino);
     for(int ini = 0; ini < INPUTS; ini++) {
-      // fprintf(stderr, "\t\tweight: %f\n", weights_io[ini][ino]);
       sum += sample[ini] * weights_io[ini][ino];
 
     }
 
     activations[ino] = sigmoid(sum * SIGMOID_SCALE);
-    // fprintf(stderr, "\tsum %f, out %f\n", sum, activations[ino]);
   }
 }
 
@@ -196,32 +195,11 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
   bool isLogistic = sigmoid == logistic;
   bool sact;
   double lb, ub = 1;
-  // for(int ini = 0; ini < INPUTS; ini++) {
-  //   for(int ino = 0; ino < OUTPUTS; ino++) {
-  //     weight = weights_io[ini][ino];
-  //     sact = ino == label;
-  //     err = (double) sact - activations[ino];
-  //     err = err * SIGMOID_SCALE;
-  //     if(isLogistic) {
-  //       // dE / dx  (tgt - out_b)
-  //       temp = sigmoid(err) * (1 - sigmoid(err)); // put in error
-  //     } else {
-  //       // dE / dx  (tgt - out_b)
-  //       temp = 1 - sigmoid(err) * sigmoid(err);
-  //     }
-
-  //     // out_a * alpha * above
-  //     temp = sample[ini] * temp * ALPHA;
-  //     // weight = weight + above
-  //     weights_io[ini][ino] = weight + temp;
-  //   }
-  // }
 
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sact = label == ino;
 
     if(isLogistic) {
-      // temp = sigmoid(activations[ino]) * (1 - sigmoid(activations[ino]));
       temp = activations[ino] * (1 - activations[ino]);
       lb = 0;
     } else {
@@ -430,12 +408,11 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
   double temp, err;
   bool isLogistic = sigmoid == logistic, sact;
   double lb, ub = 1;
-  double dem_weights[INPUTS];
 
   // hidden to out
   for(int ino = 0; ino < OUTPUTS; ino++) {
     sact = label == ino;
-    
+    // df/dx
     if(isLogistic) {
       temp = activations[ino] * (1 - activations[ino]);
       lb = 0;
@@ -443,43 +420,43 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       temp = 1 - activations[ino] * activations[ino];
       lb = -1;
     }
+    dx[ino] = temp;
 
+    // dE/do
     if(sact) {
       err = ub - activations[ino];
     } else {
       err = lb - activations[ino];
     }
+    errs[ino] = err;
 
+    // dE/do * df/dx
     temp = ALPHA * temp * err;
 
     for(int ini = 0; ini < units; ini++) {
-      if(!ini)
-        weighted_errs[ini] = err;
+      old_weights[ini][ino] = weights_ho[ini][ino];
+      // dE/do * df/dx * dn/dwi
       weights_ho[ini][ino] += h_activations[ini] * temp;
     }
   }
 
-  for(int ini = 0; ini < INPUTS; ini++) {
-    dem_weights[ini] = 0;
-    for(int ino = 0; ino < units; ino++) {
-      dem_weights[ini] += weights_ih[ini][ino] * weighted_errs[ino];
-    }
-  }
-
+  double terr;
   // input to hidden
   for(int ino = 0; ino < units; ino++) {
+    // dO/dn aka df/dx
     if(isLogistic) {
       temp = h_activations[ino] * (1 - h_activations[ino]);
     } else {
       temp = 1 - h_activations[ino] * h_activations[ino];
     }
 
-    temp = ALPHA * temp;
-
-    double sum = 0;
+    terr = 0;
+    for(int i = 0; i < OUTPUTS; i++) {
+      terr+= errs[i] * weights_ho[ino][i];
+    }
 
     for(int ini = 0; ini < INPUTS; ini++) {
-      weights_ih[ini][ino] += sample[ini] * temp * dem_weights[ini];
+      weights_ih[ini][ino] += ALPHA * sample[ini] * temp * terr;
     }
   }
 }
@@ -492,5 +469,5 @@ double logistic(double input)
   out = 1 +exp(-1 * input);
   out = 1 / out;
 
- return out;		// <--- Should return the value of the logistic function on the input 
+  return out;
 }
