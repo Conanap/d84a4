@@ -15,11 +15,11 @@ Student Name 1 (last, first): Fung, Albion
 
 Student Name 2 (last, first): Law, Chi Fai
 
-Student number 1:
+Student number 1: 1002444321
 
 Student number 2: 1002470444
 
-UTORid 1: fungalb
+UTORid 1: fungalbi
 
 UTORid 2: lawchi1
 
@@ -214,9 +214,21 @@ but explain carefully when needed.
 	       you wish, and set the number of hidden units so as to achieve the best
 	       performance.
 
-	       Number of hidden units used: 
+	       Number of hidden units used: 15, hyperbolic
 
 	       Classification rate on testing data:
+              0: 97.4490
+              1: 96.5639
+              2: 92.9264
+              3: 88.7129
+              4: 94.2974
+              5: 81.1659
+              6: 94.8852
+              7: 88.6187
+              8: 91.3758
+              9: 91.3776
+              avg: 91.7373
+          (400000 iterations, better rates than 10 hidden units, only slightly worse than 150 hidden units)
 
 9 .- (5 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
