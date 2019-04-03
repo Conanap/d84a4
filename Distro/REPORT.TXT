@@ -10,18 +10,18 @@ mark.
 
 ________________________________________________
 
-Student Name 1 (last, first):
+Student Name 1 (last, first): Fung, Albion
 
 
-Student Name 2 (last, first):
+Student Name 2 (last, first): Law, Chi Fai
 
 Student number 1:
 
-Student number 2:
+Student number 2: 1002470444
 
-UTORid 1:
+UTORid 1: fungalb
 
-UTORid 2:
+UTORid 2: lawchi1
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -29,7 +29,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-    Signed: _(student 1 name)__      _(student 2 name)_
+    Signed: _Albion Fung__      _Chi Fai Law_
 
 
 (-5 marks for failing to provide the identifying
@@ -45,36 +45,176 @@ but explain carefully when needed.
 	       Copy/paste the reported classification rates for:
 	 	
 	       Training data (last training round):
+              0: 92.9889
+              1: 96.5157
+              2: 78.4585
+              3: 83.9216
+              4: 87.8914
+              5: 63.8636
+              6: 92.2131
+              7: 89.1304
+              8: 77.3663
+              9: 74.2004
+              avg: 83.6550
+              magnitude of largest network weight: 18.437312
 
 	       Testing data:
+              0: 95.9184
+              1: 97.0044
+              2: 79.2636
+              3: 86.3366
+              4: 87.7800
+              5: 65.3587
+              6: 92.1712
+              7: 88.0350
+              8: 78.0287
+              9: 79.0882
+              avg: 84.8985
 
 2 .- (1 marks) Repeat the process using the hyperbolic tangent activation
 	       function.
 
+         Training data (last training round):
+              0: 97.5207
+              1: 95.4925
+              2: 84.7222
+              3: 85.1927
+              4: 89.5492
+              5: 81.1791
+              6: 94.9612
+              7: 92.1456
+              8: 84.5361
+              9: 84.4017
+              avg: 88.9701
+              Magnitude of largest network weight: 29.315943
+
+         Testing data:
+              0: 98.0612
+              1: 97.1806
+              2: 86.7248
+              3: 88.4158
+              4: 92.0570
+              5: 82.2870
+              6: 94.1545
+              7: 90.7588
+              8: 85.5236
+              9: 84.1427
+              avg: 89.9306
+
 
 3 .- (1 marks) Which type of activation function yielded the best classification
 	       results? which one learned faster?
+          
+          hyperbolic, hyperbolic (420000 (log) vs 345000 iterations (hyp))
 
 4 .- (1 marks) Train a 2-layer network with hyperbolic-tangent activation, using
 	       150 hidden units. Report the classification rates on training and
-	       testing data just as for 1) and 2).	       
+	       testing data just as for 1) and 2).	   
+
+         Training data (last training round):
+              0: 97.6789%
+              1: 97.0332%
+              2: 96.8254%
+              3: 95.2891%
+              4: 96.4803%
+              5: 93.6471%
+              6: 98.7395%
+              7: 95.6685%
+              8: 94.3205%
+              9: 96.3611%
+              avg: 96.3205%
+              largest hidden to output weight: 12.531025
+              largest input to hidden weight: 22.324726
+
+         Testing data:
+              0: 98.7755%
+              1: 98.7665%
+              2: 95.5426%
+              3: 95.7426%
+              4: 96.9450%
+              5: 95.0673%
+              6: 95.9290%
+              7: 96.2062%
+              8: 94.3532%
+              9: 93.3598%
+              avg: 96.0688%    
 	       
 5 .- (1 marks) Same as 4), except use 10 hidden units instead
 
+         Training data (last training round):
+              0: 96.1039%
+              1: 96.8224%
+              2: 87.4739%
+              3: 89.2368%
+              4: 91.5152%
+              5: 82.9167%
+              6: 93.1106%
+              7: 92.5182%
+              8: 87.0445%
+              9: 90.5222%
+              avg: 90.7265
+              largest hidden to output weight: 6.549847
+              largest input to hidden weight: 2.288707
+
+         Testing data:
+              0: 96.9388%
+              1: 97.2687%
+              2: 89.8256%
+              3: 90.1980%
+              4: 93.0754%
+              5: 82.0628%
+              6: 90.5010%
+              7: 89.9805%
+              8: 86.4476%
+              9: 90.3865
+              avg: 90.6685%   
+
 6 .- (1 marks) Same as 5), except use 3 hidden units instead
+
+         Training data (last training round):
+              0: 93.7381
+              1: 94.3534
+              2: 80.1619
+              3: 24.6654
+              4: 78.1780
+              5: 17.0732
+              6: 49.2218
+              7: 77.3389
+              8: 16.6667
+              9: 72.4858
+              avg: 60.3883
+              largest hidden to output weight: 4.539956
+              largest input to hidden weight: 1.608933
+
+         Testing data:
+              0: 93.1633
+              1: 97.1806
+              2: 80.3295
+              3: 23.6634
+              4: 84.9287
+              5: 31.6143
+              6: 52.2965
+              7: 73.9300
+              8: 14.5791
+              9: 81.2686
+              avg: 63.2954
 
 7 .- (4 marks) Comment on the experiments in 4, 5, and 6, and give your conclusion
 	       regarding the effect of the number of hidden units on classification
 	       accuracy. 
 
+          higher hidden units results in much better accuracy, but too many hidden units gives marginal returns while increasing training time by a lot.
+
 	       What is the network with 3 hidden telling you about this classification
 	       problem?
+
+         not enough hidden units results in poor accuracy due to lack of sampling.
 
 8 .- (5 marks) Train the best performing network you can. Use any activation function
 	       you wish, and set the number of hidden units so as to achieve the best
 	       performance.
 
-	       Number of hidden units used:
+	       Number of hidden units used: 
 
 	       Classification rate on testing data:
 
@@ -96,22 +236,22 @@ doesn't work, or what problems exist.
         	Complete/Working	Partial		Not done
 
 Logistic
- activation
+ activation         x
  
 Tanh
- activation
+ activation         x
 
-1L Feed-forward  
+1L Feed-forward     x 
 
-1L Backprop
+1L Backprop         x
 
-1L Classify
+1L Classify         x
 
-2L Feed-forward
+2L Feed-forward     x
 
-2L Backprop
+2L Backprop         x
 
-2L Classify
+2L Classify         x
 _____________________________________________________
 
 Marking:
