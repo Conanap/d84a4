@@ -234,7 +234,7 @@ but explain carefully when needed.
 	        and mouse game (move the mouse to help it survive).
 		- Describe what the input is in terms of a vector of
 		  values
-		Inputs would be an array of size maze (eg, if 8x8 then of size 64),where each value would represent if the cell is a 			wall, cat, mouse or cheese.
+		Inputs would be an array of size maze (eg, if 8x8 then of size 64),where each value would represent if the cell is a 			wall, cat, mouse or cheese. Of course, plus the bias vector.
 		- Describe what the output layer looks like (how many
 		  neurons and what they encode)
        		 4 neurons, outcome of corresponding step in terms of overall game winrate
