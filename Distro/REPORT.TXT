@@ -203,12 +203,12 @@ but explain carefully when needed.
 	       regarding the effect of the number of hidden units on classification
 	       accuracy. 
 
-          higher hidden units results in much better accuracy, but too many hidden units gives marginal returns while increasing training time by a lot.
+          higher hidden units results in much better accuracy, but too many hidden units gives marginal returns while increasing training time by a lot. Having more than 1:1 mapping of hidden units to output does not provide much benefits, as it is likely some of these are memorizing specific cases, or they are testing the same test cases as the other hidden units.
 
 	       What is the network with 3 hidden telling you about this classification
 	       problem?
 
-         not enough hidden units results in poor accuracy due to lack of sampling.
+         not enough hidden units results in poor accuracy due to lack of sampling; when there isn't enough hidden units to map to each of the possible outputs, it also makes it so that the network must guess, with more uncertainty, what it is identifying.
 
 8 .- (5 marks) Train the best performing network you can. Use any activation function
 	       you wish, and set the number of hidden units so as to achieve the best
@@ -232,17 +232,16 @@ but explain carefully when needed.
 
 9 .- (5 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
-
 		- Describe what the input is in terms of a vector of
 		  values
-        Inputs potential results of next step for mouse, i.e. what would happen to it after it takes a step left/right/up/down next turn (assuming legitimate move).
+		Inputs would be an array of size maze (eg, if 8x8 then of size 64),where each value would represent if the cell is a 			wall, cat, mouse or cheese.
 		- Describe what the output layer looks like (how many
 		  neurons and what they encode)
-        4 neurons, outcome of corresponding step in terms of overall game winrate
+       		 4 neurons, outcome of corresponding step in terms of overall game winrate
 		- Describe the error function
-        expected result from move (i.e. eat cheese, win) vs actual result of move
+        	If mouse eats cheese, reward is 1; if mouse tries to move to a wall, penalize -0.8; if mouse moves without eating cheese 		or dying, penalize -0.2 (in hopes of encouraging the mouse to go through the shortest path to the cheese instead of going in circles); -1 if mouse dies.
 		- How many layers should you use?
-        2
+        	2 to 3 is appropriate.
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
